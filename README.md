@@ -1,0 +1,2 @@
+# SlateEditorSM
+Slate editor submodule
