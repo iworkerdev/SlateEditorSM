@@ -1,12 +1,12 @@
-import { BiLink, BiUnlink } from 'react-icons/bi';
-import { CustomEditor, LinkElement } from './CustomTypes';
-import { Editor, Range, Element as SlateElement, Transforms } from 'slate';
-import { HStack, Icon, IconButton, Link } from '@chakra-ui/react';
-import React, { MouseEvent } from 'react';
-import { useSelected, useSlate } from 'slate-react';
+import { BiLink, BiUnlink } from "react-icons/bi"
+import { CustomEditor, LinkElement } from "./CustomTypes"
+import { Editor, Range, Element as SlateElement, Transforms } from "slate"
+import { HStack, Icon, IconButton, Link } from "@chakra-ui/react"
+import React, { MouseEvent } from "react"
+import { useSelected, useSlate } from "slate-react"
 
-import UrlInputDialog from './UrlInputDialog';
-import { css } from '@emotion/css';
+import UrlInputDialog from "./UrlInputDialog"
+import { css } from "@emotion/css"
 
 export const InlineChromiumBugfix = () => (
   <span
@@ -17,107 +17,108 @@ export const InlineChromiumBugfix = () => (
   >
     ${String.fromCodePoint(160) /* Non-breaking space */}
   </span>
-);
+)
 
 export const unwrapLink = (editor: CustomEditor) => {
   Transforms.unwrapNodes(editor, {
-    match: n =>
-      !Editor.isEditor(n) && SlateElement.isElement(n) && n.type === 'link',
-  });
-};
+    match: (n) =>
+      !Editor.isEditor(n) && SlateElement.isElement(n) && n.type === "link",
+  })
+}
 
 export const isLinkActive = (editor: CustomEditor) => {
   //@ts-ignore
   const [link] = Editor.nodes(editor, {
-    match: n =>
-      !Editor.isEditor(n) && SlateElement.isElement(n) && n.type === 'link',
-  });
-  return !!link;
-};
+    match: (n) =>
+      !Editor.isEditor(n) && SlateElement.isElement(n) && n.type === "link",
+  })
+  return !!link
+}
 
 export const wrapLink = (editor: CustomEditor, url: string) => {
   if (isLinkActive(editor)) {
-    unwrapLink(editor);
+    unwrapLink(editor)
   }
 
-  const { selection } = editor;
-  const isCollapsed = selection && Range.isCollapsed(selection);
+  const { selection } = editor
+  const isCollapsed = selection && Range.isCollapsed(selection)
   const link: LinkElement = {
-    type: 'link',
+    type: "link",
     url,
     children: isCollapsed ? [{ text: url }] : [],
-  };
+  }
 
   if (isCollapsed) {
-    Transforms.insertNodes(editor, link);
+    Transforms.insertNodes(editor, link)
   } else {
-    Transforms.wrapNodes(editor, link, { split: true });
-    Transforms.collapse(editor, { edge: 'end' });
+    Transforms.wrapNodes(editor, link, { split: true })
+    Transforms.collapse(editor, { edge: "end" })
   }
-};
+}
 
 export const insertLink = (editor: CustomEditor, url: string) => {
   if (editor.selection) {
-    wrapLink(editor, url);
+    wrapLink(editor, url)
   }
-};
+}
 
 export const SlateLink: React.FC<{
-  attributes: any;
-  children?: React.ReactNode;
-  element: any;
+  attributes: any
+  children?: React.ReactNode
+  element: any
 }> = ({ attributes, children, element }) => {
-  const selected = useSelected();
+  const selected = useSelected()
   return (
     <Link
       {...attributes}
-      color={selected ? 'blue.600' : 'blue.600'}
+      color={selected ? "blue.600" : "blue.600"}
       fontWeight={500}
+      target='_blank'
       href={element.url}
       className={
         selected
           ? css`
               box-shadow: 0 0 0 3px #ddd;
             `
-          : ''
+          : ""
       }
     >
       <InlineChromiumBugfix />
       {children}
       <InlineChromiumBugfix />
     </Link>
-  );
-};
+  )
+}
 
 const LinkComponent = () => {
-  const editor = useSlate();
+  const editor = useSlate()
 
   const handleAddLink = (event: MouseEvent<HTMLButtonElement>, url: string) => {
-    event.preventDefault();
+    event.preventDefault()
 
-    if (!url) return;
-    insertLink(editor, url);
-  };
+    if (!url) return
+    insertLink(editor, url)
+  }
 
   const handleRemoveLink = (event: MouseEvent<HTMLButtonElement>) => {
-    event.preventDefault();
+    event.preventDefault()
     if (isLinkActive(editor)) {
-      unwrapLink(editor);
+      unwrapLink(editor)
     }
-  };
+  }
 
   return (
     <HStack>
       <UrlInputDialog
         handleAccept={handleAddLink}
-        errorMessage={'Invalid link URL'}
-        inputPlaceHolder={'https://example.com'}
+        errorMessage={"Invalid link URL"}
+        inputPlaceHolder={"https://example.com"}
       >
-        {onOpen => (
+        {(onOpen) => (
           <IconButton
-            variant={'ghost'}
-            size={'sm'}
-            aria-label="insert link"
+            variant={"ghost"}
+            size={"sm"}
+            aria-label='insert link'
             icon={<Icon as={BiLink} />}
             onClick={onOpen}
             isActive={isLinkActive(editor)}
@@ -126,15 +127,15 @@ const LinkComponent = () => {
       </UrlInputDialog>
 
       <IconButton
-        variant={'ghost'}
-        size={'sm'}
-        aria-label="unlink"
+        variant={"ghost"}
+        size={"sm"}
+        aria-label='unlink'
         isActive={isLinkActive(editor)}
         icon={<Icon as={BiUnlink} />}
         onMouseDown={handleRemoveLink}
       />
     </HStack>
-  );
-};
+  )
+}
 
-export default LinkComponent;
+export default LinkComponent
