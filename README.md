@@ -25,8 +25,7 @@ git submodule add https://github.com/MshindiCreationsInc/SlateEditorSM.git
 ### 3. Editor dependencies
 
 ```sh
- yarn add escape-html  image-extensions is-hotkey is-url next
-  slate slate-history slate-hyperscript slate-react
+ yarn add escape-html  image-extensions is-hotkey is-url next slate slate-history slate-hyperscript slate-react
 ```
 
 ### 4. TS Development Dependencies
