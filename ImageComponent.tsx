@@ -9,10 +9,10 @@ import {
 } from "slate-react"
 
 import { BsImageFill } from "react-icons/bs"
+import { ImageExtensions } from "./imageExtensions"
 import { MdDelete } from "react-icons/md"
 import { Transforms } from "slate"
 import UrlInputDialog from "./UrlInputDialog"
-import imageExtensions from "image-extensions"
 import isUrl from "is-url"
 
 export const insertImage = (editor: CustomEditor, url: string) => {
@@ -25,7 +25,7 @@ export const isImageUrl = (url: string) => {
   if (!url) return false
   if (!isUrl(url)) return false
   const ext = new URL(url).pathname.split(".").pop() || ""
-  return imageExtensions.includes(ext)
+  return ImageExtensions.includes(ext)
 }
 
 export const SlateImage: React.FC<{
