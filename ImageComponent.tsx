@@ -72,7 +72,7 @@ export const SlateImage: React.FC<{
           position={"absolute"}
           top={0.5}
           left={0.5}
-          display={isHover ? "block" : "none"}
+          display={isHover && !attributes.readOnly ? "block" : "none"}
         >
           <IconButton
             aria-label={"Delete image"}

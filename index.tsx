@@ -123,7 +123,10 @@ const SlateEditor: React.FC<{
   editorId?: string
   readOnly?: boolean
 }> = ({ onEditorChange, content, editorId = MongoId(), readOnly = false }) => {
-  const renderElement = useCallback((props: any) => <Element {...props} />, [])
+  const renderElement = useCallback(
+    (props: any) => <Element readOnly={readOnly} {...props} />,
+    []
+  )
   const renderLeaf = useCallback((props: any) => <Leaf {...props} />, [])
   const editor: CustomEditor = useMemo(
     () => withImages(withInLines(withHistory(withReact(createEditor())))),
