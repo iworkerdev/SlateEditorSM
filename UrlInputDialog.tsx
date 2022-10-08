@@ -10,17 +10,17 @@ import {
   Stack,
   Text,
   useDisclosure,
-} from '@chakra-ui/react';
-import React, { MouseEvent, useEffect, useRef, useState } from 'react';
+} from "@chakra-ui/react"
+import React, { MouseEvent, useEffect, useRef, useState } from "react"
 
-import isUrl from 'is-url';
+import isUrl from "is-url"
 
 const UrlInputDialog: React.FC<{
-  handleAccept: (event: MouseEvent<HTMLButtonElement>, url: string) => void;
-  children: (onOpen: () => void) => React.ReactNode;
-  inputPlaceHolder: string;
-  errorMessage: string;
-  validatorFn?: (url: string) => boolean;
+  handleAccept: (event: MouseEvent<HTMLButtonElement>, url: string) => void
+  children: (onOpen: () => void) => React.ReactNode
+  inputPlaceHolder: string
+  errorMessage: string
+  validatorFn?: (url: string) => boolean
 }> = ({
   handleAccept,
   children,
@@ -28,43 +28,43 @@ const UrlInputDialog: React.FC<{
   errorMessage,
   validatorFn,
 }) => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { isOpen, onOpen, onClose } = useDisclosure()
 
-  const cancelRef = useRef<HTMLButtonElement>(null);
+  const cancelRef = useRef<HTMLButtonElement>(null)
 
-  const [url, setUrl] = useState('');
-  const [error, setError] = useState('');
+  const [url, setUrl] = useState("")
+  const [error, setError] = useState("")
 
   const handleSubmit = (event: MouseEvent<HTMLButtonElement>) => {
     if (url.trim().length < 1) {
-      setError(errorMessage);
-      return;
+      setError(errorMessage)
+      return
     }
 
     if (!isUrl(url)) {
-      setError(errorMessage);
-      return;
+      setError(errorMessage)
+      return
     }
 
     if (validatorFn && !validatorFn(url)) {
-      setError(errorMessage);
-      return;
+      setError(errorMessage)
+      return
     }
 
-    handleAccept(event, url);
-    setUrl('');
-  };
+    handleAccept(event, url)
+    setUrl("")
+  }
 
   useEffect(() => {
-    let timeOut: any = null;
+    let timeOut: any = null
 
     if (error) {
       timeOut = setTimeout(() => {
-        setError('');
-      }, 1500);
+        setError("")
+      }, 1500)
     }
-    return () => timeOut && clearTimeout(timeOut);
-  }, [error]);
+    return () => timeOut && clearTimeout(timeOut)
+  }, [error])
 
   return (
     <>
@@ -75,16 +75,16 @@ const UrlInputDialog: React.FC<{
         leastDestructiveRef={cancelRef}
         onClose={onClose}
       >
-        <AlertDialogOverlay>
+        <AlertDialogOverlay zIndex={"tooltip"}>
           <AlertDialogContent>
-            <AlertDialogHeader fontSize="lg" fontWeight="bold">
-              <Text size={'xl'}>Enter link URL</Text>
+            <AlertDialogHeader fontSize='lg' fontWeight='bold'>
+              <Text size={"xl"}>Enter link URL</Text>
             </AlertDialogHeader>
 
             <AlertDialogBody>
               <Stack>
                 {error && error.length > 0 && (
-                  <Text size={'sm'} fontWeight={600} variant={'attention'}>
+                  <Text size={"sm"} fontWeight={600} variant={"attention"}>
                     {error}
                   </Text>
                 )}
@@ -92,15 +92,15 @@ const UrlInputDialog: React.FC<{
                   placeholder={inputPlaceHolder}
                   autoFocus
                   value={url}
-                  onChange={e => setUrl(e.target.value)}
+                  onChange={(e) => setUrl(e.target.value)}
                 />
               </Stack>
             </AlertDialogBody>
 
             <AlertDialogFooter>
               <Button
-                variant={'secondary'}
-                size={'sm'}
+                variant={"secondary"}
+                size={"sm"}
                 px={8}
                 ref={cancelRef}
                 onClick={onClose}
@@ -108,8 +108,8 @@ const UrlInputDialog: React.FC<{
                 Cancel
               </Button>
               <Button
-                size={'sm'}
-                variant={'done'}
+                size={"sm"}
+                variant={"done"}
                 px={8}
                 onMouseDown={handleSubmit}
                 onClick={onClose}
@@ -122,7 +122,7 @@ const UrlInputDialog: React.FC<{
         </AlertDialogOverlay>
       </AlertDialog>
     </>
-  );
-};
+  )
+}
 
-export default UrlInputDialog;
+export default UrlInputDialog

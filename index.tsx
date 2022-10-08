@@ -15,7 +15,7 @@ import { withHistory } from "slate-history"
 import { wrapLink } from "./LinkComponent"
 
 //generate a unique mongo id
-export const generateMongoId = () => {
+export const MongoId = () => {
   const timestamp = ((new Date().getTime() / 1000) | 0).toString(16)
   return (
     timestamp +
@@ -122,12 +122,7 @@ const SlateEditor: React.FC<{
   content: SlateEditorContent
   editorId?: string
   readOnly?: boolean
-}> = ({
-  onEditorChange,
-  content,
-  editorId = generateMongoId(),
-  readOnly = false,
-}) => {
+}> = ({ onEditorChange, content, editorId = MongoId(), readOnly = false }) => {
   const renderElement = useCallback((props: any) => <Element {...props} />, [])
   const renderLeaf = useCallback((props: any) => <Leaf {...props} />, [])
   const editor: CustomEditor = useMemo(
@@ -174,7 +169,7 @@ const SlateEditor: React.FC<{
       border={"1px"}
       borderColor={borderColor}
       borderRadius={"4px"}
-      onBlur={() => {
+      onMouseLeave={() => {
         onEditorChange({
           html: String(serialize(editor)),
           slate: JSON.stringify(editor.children),
