@@ -33,7 +33,8 @@ export const SlateImage: React.FC<{
   attributes: any;
   children: React.ReactNode;
   align?: "left" | "center" | "right";
-}> = ({ attributes, children, element, align }) => {
+  readOnly?: boolean;
+}> = ({ attributes, children, element, align, readOnly }) => {
   const editor = useSlateStatic();
   const path = ReactEditor.findPath(editor, element);
   const [isHover, setIsHover] = React.useState(false);
@@ -59,7 +60,9 @@ export const SlateImage: React.FC<{
         }
         contentEditable={false}
         position={"relative"}
-        onMouseEnter={() => setIsHover(true)}
+        onMouseEnter={() => {
+          setIsHover(true);
+        }}
         onMouseLeave={() => setIsHover(false)}
       >
         <Image
@@ -75,7 +78,7 @@ export const SlateImage: React.FC<{
           position={"absolute"}
           top={0.5}
           left={0.5}
-          display={isHover && !attributes.readOnly ? "block" : "none"}
+          display={isHover && !readOnly ? "block" : "none"}
         >
           <IconButton
             aria-label={"Delete image"}

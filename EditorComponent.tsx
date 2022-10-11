@@ -4,70 +4,101 @@ import {
   ListItem,
   OrderedList,
   UnorderedList,
-} from "@chakra-ui/react"
+} from "@chakra-ui/react";
 
-import React from "react"
-import { SlateImage } from "./ImageComponent"
-import { SlateLink } from "./LinkComponent"
-import { css } from "@emotion/css"
+import React from "react";
+import { SlateImage } from "./ImageComponent";
+import { SlateLink } from "./LinkComponent";
+import { css } from "@emotion/css";
 
 export const Element: React.FC<{
-  attributes: any
-  children: any
-  element: any
-}> = ({ attributes, children, element }) => {
-  const style = { textAlign: element.align }
+  attributes: any;
+  children: any;
+  element: any;
+  readOnly?: boolean;
+}> = ({ attributes, children, element, readOnly }) => {
+  const style = { textAlign: element.align };
   switch (element.type) {
     case "block-quote":
       return (
-        <blockquote style={style} {...attributes}>
+        <blockquote
+          style={style}
+          {...attributes}
+        >
           {children}
         </blockquote>
-      )
+      );
     case "bulleted-list":
       return (
-        <UnorderedList style={style} {...attributes}>
+        <UnorderedList
+          style={style}
+          {...attributes}
+        >
           {children}
         </UnorderedList>
-      )
+      );
     case "heading-one":
       return (
-        <Heading as={"h1"} style={style} size={"2xl"} {...attributes}>
+        <Heading
+          as={"h1"}
+          style={style}
+          size={"2xl"}
+          {...attributes}
+        >
           {children}
         </Heading>
-      )
+      );
     case "heading-two":
       return (
-        <Heading as={"h2"} style={style} size={"xl"} {...attributes}>
+        <Heading
+          as={"h2"}
+          style={style}
+          size={"xl"}
+          {...attributes}
+        >
           {children}
         </Heading>
-      )
+      );
     case "heading-three":
       return (
-        <Heading as={"h3"} style={style} size={"lg"} {...attributes}>
+        <Heading
+          as={"h3"}
+          style={style}
+          size={"lg"}
+          {...attributes}
+        >
           {children}
         </Heading>
-      )
+      );
 
     case "list-item":
       return (
-        <ListItem style={style} {...attributes}>
+        <ListItem
+          style={style}
+          {...attributes}
+        >
           {children}
         </ListItem>
-      )
+      );
     case "numbered-list":
       return (
-        <OrderedList style={style} {...attributes}>
+        <OrderedList
+          style={style}
+          {...attributes}
+        >
           {children}
         </OrderedList>
-      )
+      );
 
     case "link":
       return (
-        <SlateLink attributes={attributes} element={element}>
+        <SlateLink
+          attributes={attributes}
+          element={element}
+        >
           {children}
         </SlateLink>
-      )
+      );
     case "image":
       return (
         <Box>
@@ -75,40 +106,44 @@ export const Element: React.FC<{
             attributes={attributes}
             element={element}
             align={style.textAlign}
+            readOnly={readOnly}
           >
             {children}
           </SlateImage>
         </Box>
-      )
+      );
 
     default:
       return (
-        <p style={style} {...attributes}>
+        <p
+          style={style}
+          {...attributes}
+        >
           {children}
         </p>
-      )
+      );
   }
-}
+};
 
 export const Leaf: React.FC<{
-  attributes: any
-  children: any
-  leaf: any
+  attributes: any;
+  children: any;
+  leaf: any;
 }> = ({ attributes, children, leaf }) => {
   if (leaf.bold) {
-    children = <strong>{children}</strong>
+    children = <strong>{children}</strong>;
   }
 
   if (leaf.code) {
-    children = <code>{children}</code>
+    children = <code>{children}</code>;
   }
 
   if (leaf.italic) {
-    children = <em>{children}</em>
+    children = <em>{children}</em>;
   }
 
   if (leaf.underline) {
-    children = <u>{children}</u>
+    children = <u>{children}</u>;
   }
 
   return (
@@ -124,5 +159,5 @@ export const Leaf: React.FC<{
     >
       {children}
     </span>
-  )
-}
+  );
+};
