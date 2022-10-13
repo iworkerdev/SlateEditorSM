@@ -18,6 +18,8 @@ import LinkComponent from './LinkComponent';
 import React from 'react';
 
 const ToolBar = () => {
+  const ref = React.useRef();
+
   return (
     <Stack
       spacing={1}
