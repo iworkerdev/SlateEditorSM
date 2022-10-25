@@ -7,6 +7,8 @@ import { insertImage, isImageUrl } from "./ImageComponent";
 
 import { CustomEditor } from "./CustomTypes";
 import ToolBar from "./ToolBar";
+import deserialize from "./deserialize";
+import { getTextFromHtml } from "../utils/fn";
 import isHotkey from "is-hotkey";
 import isUrl from "is-url";
 import serialize from "./Serialize";
@@ -98,27 +100,39 @@ const withImages = (editor: CustomEditor) => {
   return editor;
 };
 
-export const INITIAL_EDITOR_VALUE = JSON.stringify([
-  {
-    type: "paragraph",
-    children: [{ text: "Delete me and explore your way in" }],
-  },
-]);
+const withHtml = (editor: CustomEditor) => {
+  const { insertData, isVoid, isInline } = editor;
 
-export const INITIAL_EDITOR_HTML_STRING = `<p>Delete me and explore your way in</p>`;
+  editor.isInline = (element) => {
+    return element.type === "link" ? true : isInline(element);
+  };
+
+  editor.isVoid = (element) => {
+    return element.type === "image" ? true : isVoid(element);
+  };
+
+  editor.insertData = (data) => {
+    const html = data.getData("text/html");
+
+    if (html) {
+      const parsed = new DOMParser().parseFromString(html, "text/html");
+      const fragment = deserialize(parsed.body);
+      Transforms.insertFragment(editor, fragment);
+      return;
+    }
+
+    insertData(data);
+  };
+  return editor;
+};
 
 export interface SlateEditorContent {
   html: string;
-  slate: string;
+  text: string;
 }
 
-export const DEFAULT_EDITOR_CONTENT: SlateEditorContent = {
-  html: INITIAL_EDITOR_HTML_STRING,
-  slate: INITIAL_EDITOR_VALUE,
-};
-
 const SlateEditor: React.FC<{
-  onEditorChange: (editorContent: SlateEditorContent) => void;
+  onEditorChange: (html: string, text: string) => void;
   content: SlateEditorContent;
   editorId?: string;
   readOnly?: boolean;
@@ -134,7 +148,8 @@ const SlateEditor: React.FC<{
   );
   const renderLeaf = useCallback((props: any) => <Leaf {...props} />, []);
   const editor: CustomEditor = useMemo(
-    () => withImages(withInLines(withHistory(withReact(createEditor())))),
+    () =>
+      withHtml(withImages(withInLines(withReact(withHistory(createEditor()))))),
     []
   );
 
@@ -168,6 +183,10 @@ const SlateEditor: React.FC<{
   const bgColor = useColorModeValue("white", "gray.800");
   const borderColor = useColorModeValue("gray.200", "gray.700");
 
+  const editorValue = deserialize(
+    new DOMParser().parseFromString(content.html, "text/html").body
+  );
+
   return (
     <Stack
       w={"100%"}
@@ -178,16 +197,14 @@ const SlateEditor: React.FC<{
       borderColor={borderColor}
       borderRadius={"4px"}
       onMouseLeave={() => {
-        onEditorChange({
-          html: String(serialize(editor)),
-          slate: JSON.stringify(editor.children),
-        });
+        const htmlValue = String(serialize(editor));
+        const textValue = getTextFromHtml(htmlValue);
+        onEditorChange(htmlValue, textValue);
       }}
     >
       <Slate
         editor={editor}
-        //@ts-ignore
-        value={JSON.parse(content.slate)}
+        value={editorValue}
       >
         {!readOnly && <ToolBar />}
         <Box
