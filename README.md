@@ -13,7 +13,7 @@ This is a submodule code intended to be published as a package some day. It is a
 ### 1. Add to your working directory
 
 ```sh
-git submodule add https://github.com/MshindiCreationsInc/SlateEditorSM.git
+git submodule add https://github.com/iworkerdev/SlateEditorSM.git
 ```
 
 ### 2. UI Dependencies
